@@ -1,11 +1,14 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./db/connectDB");
+const applyMiddleWare = require("./middleware/middleware");
 
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
 const playerRoutes = require("./routes/Player");
+
+applyMiddleWare(app);
 
 app.use(playerRoutes);
 

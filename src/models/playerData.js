@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const playerDataSchema = new mongoose.Schema({
-  playerEmail: {
+  playerId: {
+    type: Number,
+    require: true,
+  },
+  userEmail: {
     type: String,
     require: true,
   },
