@@ -7,10 +7,12 @@ require("dotenv").config();
 const port = process.env.PORT || 5000;
 
 const playerRoutes = require("./routes/Player");
+const officeRoutes = require("./routes/Office");
 
 applyMiddleWare(app);
 
 app.use(playerRoutes);
+app.use(officeRoutes);
 
 app.get("/", (req, res) => {
   res.send("Buet Cricket Server is Running");

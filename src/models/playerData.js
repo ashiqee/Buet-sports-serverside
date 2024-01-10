@@ -25,6 +25,10 @@ const playerDataSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  officeSortName: {
+    type: String,
+    require: true,
+  },
   mobile: {
     type: String,
     require: true,
@@ -52,6 +56,10 @@ const playerDataSchema = new mongoose.Schema({
   transactionID: {
     type: String,
     require: true,
+  },
+  amountFee: {
+    type: Number,
+    required: true,
   },
   paymentStatus: {
     type: String,
