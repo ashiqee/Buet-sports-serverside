@@ -5,11 +5,29 @@ const playerData = require("../../models/playerData");
 var router = express.Router();
 
 router.get("/player", async (req, res) => {
-  const filter = req.query;
-  console.log(filter);
-
-  const result = await playerData.find();
-  res.send(result);
+  try {
+    const searchText = req.query.search;
+    console.log(searchText);
+    const searchRegex = new RegExp(searchText, "i");
+    const result = await playerData
+      .find({
+        $or: [
+          { name: searchRegex },
+          { playerRole: searchRegex },
+          { office: searchRegex },
+        ],
+      })
+      .then((player) => {
+        // res.send(result);
+        res.status(200).json({ player });
+        console.log(player);
+      })
+      .catch((error) => {
+        res.status(500).json({ msg: "Unable to find player" });
+      });
+  } catch (error) {
+    res.status(500).json({ msg: "No matching records found" });
+  }
 });
 
 router.get("/player/:id", async (req, res) => {
