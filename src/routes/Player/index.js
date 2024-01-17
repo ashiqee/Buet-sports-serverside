@@ -1,4 +1,5 @@
 var express = require("express");
+const { isObjectIdOrHexString } = require("mongoose");
 
 const playerData = require("../../models/playerData");
 
@@ -7,7 +8,7 @@ var router = express.Router();
 router.get("/player", async (req, res) => {
   try {
     const searchText = req.query.search;
-    console.log(searchText);
+    // console.log(searchText);
     const searchRegex = new RegExp(searchText, "i");
     const result = await playerData
       .find({
@@ -20,7 +21,7 @@ router.get("/player", async (req, res) => {
       .then((player) => {
         // res.send(result);
         res.status(200).json({ player });
-        console.log(player);
+        // console.log(player);
       })
       .catch((error) => {
         res.status(500).json({ msg: "Unable to find player" });
@@ -30,9 +31,16 @@ router.get("/player", async (req, res) => {
   }
 });
 
+router.get("/regPlayer/:email", async (req, res) => {
+  const email = req.params.email;
+  // console.log(email);
+  const result = await playerData.find({ userEmail: email });
+  res.send(result);
+});
+
 router.get("/player/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+
   const result = await playerData.findOne({ playerId: id });
   // console.log(result);
   res.send(result);
@@ -40,10 +48,6 @@ router.get("/player/:id", async (req, res) => {
 
 router.get("/playerCount", async (req, res) => {
   const totalPlayer = await playerData.estimatedDocumentCount();
-  // const filter = req.query;
-  // console.log(filter);
-  // const query = { mobile: req.query };
-  // const exitsPlayer = await playerData.findOne(query);
   res.send({ totalPlayer });
 });
 
@@ -65,6 +69,14 @@ router.post("/player", async (req, res) => {
   } catch (err) {
     res.status(500).send(err.message);
   }
+});
+
+router.patch("/paymentUpdate/:id", async (req, res) => {
+  console.log(req.params.id);
+  const id = req.params.id;
+  const query = { _id: id };
+  const result = playerData.updateOne(query);
+  console.log(result);
 });
 
 module.exports = router;

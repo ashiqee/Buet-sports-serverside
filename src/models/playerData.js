@@ -51,11 +51,12 @@ const playerDataSchema = new mongoose.Schema({
   },
   bkashNumber: {
     type: String,
-    require: true,
   },
   transactionID: {
     type: String,
-    require: true,
+  },
+  cashPayment: {
+    type: String,
   },
   amountFee: {
     type: Number,
@@ -63,7 +64,7 @@ const playerDataSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ["pending", "done"],
+    enum: ["pending", "Paid"],
   },
 });
 
