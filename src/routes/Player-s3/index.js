@@ -1,7 +1,7 @@
 var express = require("express");
 const { isObjectIdOrHexString } = require("mongoose");
+const playerData_s3 = require("../../models/playerData3");
 
-const playerData = require("../../models/playerData");
 
 var router = express.Router();
 
@@ -10,7 +10,7 @@ router.get("/player", async (req, res) => {
     const searchText = req.query.search;
     // console.log(searchText);
     const searchRegex = new RegExp(searchText, "i");
-    const result = await playerData
+    const result = await playerData_s3
       .find({
         $or: [
           { name: searchRegex },
@@ -34,28 +34,30 @@ router.get("/player", async (req, res) => {
 router.get("/regPlayer/:email", async (req, res) => {
   const email = req.params.email;
   // console.log(email);
-  const result = await playerData.find({ userEmail: email });
+  const result = await playerData_s3.find({ userEmail: email });
   res.send(result);
 });
 
 router.get("/player/:id", async (req, res) => {
   const id = req.params.id;
 
-  const result = await playerData.findOne({ playerId: id });
+  const result = await playerData_s3.findOne({ playerId: id });
   // console.log(result);
   res.send(result);
 });
 
 router.get("/playerCount", async (req, res) => {
-  const totalPlayer = await playerData.estimatedDocumentCount();
+  const totalPlayer = await playerData_s3.estimatedDocumentCount();
   res.send({ totalPlayer });
 });
 
 router.post("/player", async (req, res) => {
   const player = req.body;
 
+  
+
   const query = { mobile: player.mobile };
-  const exitsPlayer = await playerData.findOne(query);
+  const exitsPlayer = await playerData_s3.findOne(query);
   if (exitsPlayer) {
     return res.send({
       message: "Player Already Exits",
@@ -64,7 +66,7 @@ router.post("/player", async (req, res) => {
     });
   }
   try {
-    const result = await playerData.create(player);
+    const result = await playerData_s3.create(player);
     res.send(result);
   } catch (err) {
     res.status(500).send(err.message);
@@ -72,7 +74,7 @@ router.post("/player", async (req, res) => {
 });
 
 router.patch("/paymentUpdate/:id", async (req, res) => {
-  const result = await playerData.updateOne(
+  const result = await playerData_s3.updateOne(
     { _id: req.params.id },
     {
       $set: {
@@ -87,7 +89,7 @@ router.patch("/paymentUpdate/:id", async (req, res) => {
 router.patch("/playerUpdate/:id", async (req, res) => {
   const updateData = req.body;
   console.log(updateData);
-  const result = await playerData.updateOne(
+  const result = await playerData_s3.updateOne(
     {
       _id: req.params.id,
     },

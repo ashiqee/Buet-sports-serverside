@@ -4,14 +4,16 @@ const connectDB = require("./db/connectDB");
 const applyMiddleWare = require("./middleware/middleware");
 
 require("dotenv").config();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 const playerRoutes = require("./routes/Player");
+const playerRoutesS3 = require("./routes/Player-s3");
 const officeRoutes = require("./routes/Office");
 
 applyMiddleWare(app);
 
 app.use(playerRoutes);
+app.use(playerRoutesS3);
 app.use(officeRoutes);
 
 app.get("/", (req, res) => {

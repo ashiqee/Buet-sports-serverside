@@ -25,7 +25,6 @@ const playerDataSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  
   officeSortName: {
     type: String,
     require: true,
@@ -69,6 +68,6 @@ const playerDataSchema = new mongoose.Schema({
   },
 });
 
-const playerData = mongoose.model("players", playerDataSchema);
+const playerData_s3 = mongoose.model("players_s3", playerDataSchema);
 
-module.exports = playerData;
+module.exports = playerData_s3;
