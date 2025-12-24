@@ -1,16 +1,16 @@
 var express = require("express");
 const { isObjectIdOrHexString } = require("mongoose");
-const playerData_s3 = require("../../models/playerData3");
+const playerData_s4 = require("../../models/playerData4");
 
 
 var router = express.Router();
 
-router.get("/player-s3", async (req, res) => {
+router.get("/player-s4", async (req, res) => {
   try {
     const searchText = req.query.search;
     // console.log(searchText);
     const searchRegex = new RegExp(searchText, "i");
-    const result = await playerData_s3
+    const result = await playerData_s4
       .find({
         $or: [
           { name: searchRegex },
@@ -34,20 +34,20 @@ router.get("/player-s3", async (req, res) => {
 router.get("/regPlayer/:email", async (req, res) => {
   const email = req.params.email;
   // console.log(email);
-  const result = await playerData_s3.find({ userEmail: email });
+  const result = await playerData_s4.find({ userEmail: email });
   res.send(result);
 });
 
 router.get("/player/:id", async (req, res) => {
   const id = req.params.id;
 
-  const result = await playerData_s3.findOne({ playerId: id });
+  const result = await playerData_s4.findOne({ playerId: id });
   // console.log(result);
   res.send(result);
 });
 
 router.get("/playerCount", async (req, res) => {
-  const totalPlayer = await playerData_s3.estimatedDocumentCount();
+  const totalPlayer = await playerData_s4.estimatedDocumentCount();
   res.send({ totalPlayer });
 });
 
@@ -57,7 +57,7 @@ router.post("/player", async (req, res) => {
 
 
   const query = { mobile: player.mobile };
-  const exitsPlayer = await playerData_s3.findOne(query);
+  const exitsPlayer = await playerData_s4.findOne(query);
   if (exitsPlayer) {
     return res.send({
       message: "Player Already Exits",
@@ -66,7 +66,7 @@ router.post("/player", async (req, res) => {
     });
   }
   try {
-    const result = await playerData_s3.create(player);
+    const result = await playerData_s4.create(player);
     res.send(result);
   } catch (err) {
     res.status(500).send(err.message);
@@ -74,7 +74,7 @@ router.post("/player", async (req, res) => {
 });
 
 router.patch("/paymentUpdate/:id", async (req, res) => {
-  const result = await playerData_s3.updateOne(
+  const result = await playerData_s4.updateOne(
     { _id: req.params.id },
     {
       $set: {
@@ -89,7 +89,7 @@ router.patch("/paymentUpdate/:id", async (req, res) => {
 router.patch("/playerUpdate/:id", async (req, res) => {
   const updateData = req.body;
   console.log(updateData);
-  const result = await playerData_s3.updateOne(
+  const result = await playerData_s4.updateOne(
     {
       _id: req.params.id,
     },

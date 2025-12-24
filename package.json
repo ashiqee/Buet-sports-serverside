@@ -1,16 +1,9 @@
 {
   "name": "buet-cricket-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
+  "engines": { "node": ">=24" },
+  "scripts": { "dev": "nodemon api/index.js" },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
