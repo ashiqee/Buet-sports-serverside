@@ -15,9 +15,13 @@ const getConnectionString = () => {
 };
 
 const connectDB = async () => {
-  const uri = getConnectionString();
-  await mongoose.connect(uri, { dbName: process.env.DB_NAME });
-  console.log("Connected to Database");
+  try {
+    const uri = getConnectionString();
+    await mongoose.connect(uri, { dbName: process.env.DB_NAME });
+    console.log("Connected to Database");
+  } catch (error) {
+    console.error("Database connection error:", error.message);
+  }
 };
 
 module.exports = connectDB;

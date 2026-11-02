@@ -1,9 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const connectDB = require("../db/connectDB");
 const applyMiddleWare = require("../middleware/middleware");
-
-require("dotenv").config();
 
 // Connect DB
 connectDB();
@@ -31,5 +31,12 @@ app.all("*", (req, res) => {
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message });
 });
+
+const PORT = process.env.PORT || 5001;
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`BUET Cricket Server is running on port ${PORT}`);
+  });
+}
 
 module.exports = app;

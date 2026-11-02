@@ -1,8 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "src/app.js": {
-      "runtime": "nodejs24.x"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
-  }
+  ]
 }

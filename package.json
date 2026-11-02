@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "engines": { "node": ">=24" },
-  "scripts": { "dev": "nodemon api/index.js" },
+  "scripts": {
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

@@ -1,16 +1,16 @@
 var express = require("express");
 const { isObjectIdOrHexString } = require("mongoose");
 const playerData_s3 = require("../../models/playerData3");
-
+const { isRegistrationOpen, REGISTRATION_DEADLINE } = require("../../config/deadline");
+const { encryptPayload } = require("../../utils/cipher");
 
 var router = express.Router();
 
 router.get("/player-s3", async (req, res) => {
   try {
     const searchText = req.query.search;
-    // console.log(searchText);
     const searchRegex = new RegExp(searchText, "i");
-    const result = await playerData_s3
+    const player = await playerData_s3
       .find({
         $or: [
           { name: searchRegex },
@@ -18,14 +18,11 @@ router.get("/player-s3", async (req, res) => {
           { office: searchRegex },
         ],
       })
-      .then((player) => {
-        // res.send(result);
-        res.status(200).json({ player });
-        // console.log(player);
-      })
-      .catch((error) => {
-        res.status(500).json({ msg: "Unable to find player" });
-      });
+      .select("-bkashNumber -transactionID -amountFee -userEmail -__v");
+
+    res.status(200).json({
+      securePayload: encryptPayload({ player }),
+    });
   } catch (error) {
     res.status(500).json({ msg: "No matching records found" });
   }
@@ -33,17 +30,16 @@ router.get("/player-s3", async (req, res) => {
 
 router.get("/regPlayer/:email", async (req, res) => {
   const email = req.params.email;
-  // console.log(email);
   const result = await playerData_s3.find({ userEmail: email });
-  res.send(result);
+  res.send({ securePayload: encryptPayload(result) });
 });
 
 router.get("/player/:id", async (req, res) => {
   const id = req.params.id;
-
-  const result = await playerData_s3.findOne({ playerId: id });
-  // console.log(result);
-  res.send(result);
+  const result = await playerData_s3
+    .findOne({ playerId: id })
+    .select("-bkashNumber -transactionID -amountFee -userEmail -__v");
+  res.send({ securePayload: encryptPayload(result) });
 });
 
 router.get("/playerCount", async (req, res) => {
@@ -52,9 +48,16 @@ router.get("/playerCount", async (req, res) => {
 });
 
 router.post("/player", async (req, res) => {
+  if (!isRegistrationOpen()) {
+    return res.status(403).json({
+      message: "Registration deadline has expired (Deadline: 11 November 2026). Registration is closed.",
+      insertedId: null,
+      closed: true,
+      deadline: REGISTRATION_DEADLINE,
+    });
+  }
+
   const player = req.body;
-
-
 
   const query = { mobile: player.mobile };
   const exitsPlayer = await playerData_s3.findOne(query);
@@ -82,13 +85,11 @@ router.patch("/paymentUpdate/:id", async (req, res) => {
       },
     }
   );
-  // console.log(result);
   res.send(result);
 });
 
 router.patch("/playerUpdate/:id", async (req, res) => {
   const updateData = req.body;
-  console.log(updateData);
   const result = await playerData_s3.updateOne(
     {
       _id: req.params.id,
